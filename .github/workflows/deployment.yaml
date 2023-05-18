@@ -28,8 +28,6 @@ jobs:
       # Kubernetes job
       - name: Install kubectl.
         uses: azure/setup-kubectl@v3
-        with:
-          token: ${{ secrets.DO_TOKEN }}
       - name: Setup kubeconfig.
         run: |
           mkdir ~/.kube

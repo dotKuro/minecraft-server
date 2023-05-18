@@ -37,7 +37,8 @@ spec:
     spec:
       containers:
         - name: minecraft-server
-          image: ghcr.io/dotkuro/minecraft-server
+          image: ghcr.io/dotkuro/minecraft-server:latest
+          imagePullPolicy: Always
           ports:
             - name: minecraft-tcp
               containerPort: 25565
