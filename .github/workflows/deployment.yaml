@@ -32,6 +32,7 @@ jobs:
           token: ${{ secrets.DO_TOKEN }}
       - name: Setup kubeconfig.
         run: |
+          mkdir ~/.kube
           echo '${{ secrets.KUBECONFIG }}' > ~/.kube/config
       - name: Apply the job manifest.
         run: |
