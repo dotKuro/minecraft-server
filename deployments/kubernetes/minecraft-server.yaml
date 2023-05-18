@@ -65,8 +65,8 @@ spec:
           persistentVolumeClaim:
             claimName: minecraft-server-data
 ---
-kind: Service
 apiVersion: v1
+kind: Service
 metadata:
   name: minecraft-server
   namespace: minecraft-server
@@ -83,6 +83,18 @@ spec:
     - name: minecraft-tcp
       port: 25565
       targetPort: minecraft-tcp
+  selector:
+    app: minecraft-server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minecraft-rcon
+  namespace: minecraft-server
+  labels:
+    app: minecraft-server
+spec:
+  ports:
     - name: minecraft-rcon
       port: 25575
       targetPort: minecraft-rcon
