@@ -1,0 +1,42 @@
+name: Deploy the minecraft server
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout the repository.
+        uses: actions/checkout@v3
+
+      # Docker image
+      - name: Login to the container registry.
+        uses: docker/login-action@v2
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.DOCKER_TOKEN }}
+      - name: Build the docker image and push it to the container registry.
+        uses: docker/build-push-action@v4
+        with:
+          push: true
+          tags: ghcr.io/dotkuro/minecraft-server:latest
+
+      # Kubernetes job
+      - name: Install kubectl.
+        uses: azure/setup-kubectl@v3
+        with:
+          token: ${{ secrets.DO_TOKEN }}
+      - name: Setup kubeconfig.
+        run: |
+          echo ${{ secrets.KUBECONFIG }} > ~/.kube/config
+      - name: Apply the job manifest.
+        run: |
+          kubectl apply -f deployments/kubernetes/minecraft-server.yaml
+      - name: Restart the deployment.
+        run: |
+          kubectl rollout restart deployment/minecraft-server --namespace minecraft-server
+
