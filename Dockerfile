@@ -11,6 +11,7 @@ RUN java -jar BuildTools.jar --rev ${MC_REV}
 RUN mv ./spigot-${MC_REV}.jar ./spigot.jar
 
 FROM alpine:3.18.0
+LABEL org.opencontainers.image.source https://github.com/dotkuro/minecraft-server
 
 RUN apk add openjdk17
 RUN mkdir /server
