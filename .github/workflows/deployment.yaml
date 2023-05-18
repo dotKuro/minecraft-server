@@ -32,7 +32,7 @@ jobs:
           token: ${{ secrets.DO_TOKEN }}
       - name: Setup kubeconfig.
         run: |
-          echo ${{ secrets.KUBECONFIG }} > ~/.kube/config
+          echo '${{ secrets.KUBECONFIG }}' > ~/.kube/config
       - name: Apply the job manifest.
         run: |
           kubectl apply -f deployments/kubernetes/minecraft-server.yaml
