@@ -27,6 +27,8 @@ metadata:
     app: rcon-web-admin
 spec:
   replicas: 1
+  strategy:
+    type: Recreate
   selector:
     matchLabels:
       app: rcon-web-admin
