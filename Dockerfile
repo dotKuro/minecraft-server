@@ -3,6 +3,9 @@ FROM alpine:3.18.0 as build
 ARG MC_REV='1.19.4'
 ARG BUILD_TOOLS_URL='https://hub.spigotmc.org/jenkins/job/BuildTools/lastSuccessfulBuild/artifact/target/BuildTools.jar'
 
+ENV MIN_MEMORY_G=1
+ENV MAX_MEMORY_G=2
+
 RUN apk add openjdk17 git
 RUN mkdir /build
 WORKDIR /build
@@ -18,4 +21,4 @@ RUN mkdir -p /server/data
 WORKDIR /server/data
 COPY --from=build /build/spigot.jar /server
 
-CMD ["java", "-jar", "/server/spigot.jar", "--nogui"]
+CMD ["sh", "-c", "java -Xms${MIN_MEMORY_G}G -Xmx${MAX_MEMORY_G}G -jar /server/spigot.jar --nogui"]

@@ -57,9 +57,21 @@ spec:
             - name: minecraft-rcon
               containerPort: 25575
               protocol: TCP
+          env:
+            - name: MIN_MEMORY_G
+              value: "1"
+            - name: MAX_MEMORY_G
+              value: "6"
           volumeMounts:
             - mountPath: "/server/data"
               name: minecraft-server-volume
+          resources:
+            requests:
+              memory: 2Gi
+              cpu: 500m
+            limits:
+              memory: 7Gi
+              cpu: 1000m
       volumes:
         - name: minecraft-server-volume
           persistentVolumeClaim:
