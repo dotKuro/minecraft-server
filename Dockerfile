@@ -14,8 +14,8 @@ FROM alpine:3.18.0
 LABEL org.opencontainers.image.source https://github.com/dotkuro/minecraft-server
 
 RUN apk add openjdk17
-RUN mkdir /server
-WORKDIR /server
-COPY --from=build /build/spigot.jar .
+RUN mkdir -p /server/data
+WORKDIR /server/data
+COPY --from=build /build/spigot.jar /server
 
-CMD ["java", "-jar", "spigot.jar", "--nogui"]
+CMD ["java", "-jar", "/server/spigot.jar", "--nogui"]

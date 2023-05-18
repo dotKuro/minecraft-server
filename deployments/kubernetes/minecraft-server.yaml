@@ -17,3 +17,38 @@ spec:
     requests:
       storage: 10Gi
   storageClassName: hcloud-volumes
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minecraft-server
+  namespace: minecraft-server
+  labels:
+    app: minecraft-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: minecraft-server
+  template:
+    metadata:
+      labels:
+        app: minecraft-server
+    spec:
+      containers:
+        - name: minecraft-server
+          image: ghcr.io/dotkuro/minecraft-server
+          ports:
+            - name: minecraft-tcp
+              containerPort: 25565
+              protocol: TCP
+            # - name: minecraft-udp
+            #   containerPort: 19132
+            #   protocol: UDP
+          volumeMounts:
+            - mountPath: "/server/data"
+              name: minecraft-server-volume
+      volumes:
+        - name: minecraft-server-volume
+          persistentVolumeClaim:
+            claimName: minecraft-server-data
