@@ -35,6 +35,17 @@ spec:
       labels:
         app: minecraft-server
     spec:
+      initContainers:
+        - name: accept-eula
+          image: busybox
+          command:
+            - /bin/sh
+            - -c
+            - >
+              echo 'eula=true' > /data/eula.txt
+          volumeMounts:
+            - mountPath: "/data"
+              name: minecraft-server-volume
       containers:
         - name: minecraft-server
           image: ghcr.io/dotkuro/minecraft-server:latest
@@ -43,9 +54,9 @@ spec:
             - name: minecraft-tcp
               containerPort: 25565
               protocol: TCP
-            # - name: minecraft-udp
-            #   containerPort: 19132
-            #   protocol: UDP
+            - name: minecraft-rcon
+              containerPort: 25575
+              protocol: TCP
           volumeMounts:
             - mountPath: "/server/data"
               name: minecraft-server-volume
@@ -53,3 +64,27 @@ spec:
         - name: minecraft-server-volume
           persistentVolumeClaim:
             claimName: minecraft-server-data
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: minecraft-server
+  namespace: minecraft-server
+  labels:
+    app: minecraft-server
+  annotations:
+    load-balancer.hetzner.cloud/name: lb2.cluster1
+    load-balancer.hetzner.cloud/location: fsn1
+    load-balancer.hetzner.cloud/uses-proxyprotocol: "false"
+    load-balancer.hetzner.cloud/hostname: lb2.cluster1.dotku.ro
+spec:
+  type: LoadBalancer
+  ports:
+    - name: minecraft-tcp
+      port: 25565
+      targetPort: minecraft-tcp
+    - name: minecraft-rcon
+      port: 25575
+      targetPort: minecraft-rcon
+  selector:
+    app: minecraft-server
